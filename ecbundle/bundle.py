@@ -175,13 +175,13 @@ class BundleCreator(object):
         header("    " + bundle.file())
 
         src_dir = self.src_dir()
-        bundle_yml_file = src_dir + "/bundle.yml"
 
         if self.bundle_needs_updating():
-
-            symlink_force(bundle.file(), bundle_yml_file)
-            symlink_force(os.path.dirname(bundle.file()) + "/arch", src_dir + "/arch")
-
+            wdir = os.getcwd()
+            os.chdir(src_dir)
+            symlink_force(os.path.relpath(bundle.file()), "bundle.yml")
+            symlink_force(os.path.relpath(os.path.dirname(bundle.file()) + "/arch"), "arch")
+            os.chdir(wdir)
             self.create_cmakelists_from_bundle()
 
             success("\nBundle created at src-dir")
